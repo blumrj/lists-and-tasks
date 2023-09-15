@@ -1,0 +1,11 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.card-header i{
+    cursor: pointer;
+    transition: ease-in 0.2s;
+}
+.card-header i:hover{
+    color: red;
+}
