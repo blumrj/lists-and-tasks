@@ -2,11 +2,11 @@
     margin: 0;
     padding: 0;
 }
-.card-header i{
+.icon{
     cursor: pointer;
     transition: ease-in 0.2s;
 }
-.card-header i:hover{
+.icon:hover{
     color: red;
 }
 .completed-task{
