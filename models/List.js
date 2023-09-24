@@ -8,13 +8,22 @@ const ListSchema = new Schema({
         trim: true,
         maxlength: 20
     }
-})
+},
+{
+    virtuals: {
+        tasks: {
+            options: {
+                ref: 'Task',
+                localField: '_id',
+                foreignField: "list"
+            }
+        }
+    }
+}
+)
 
-// ListSchema.virtual("tasks", {
-//     ref: "Task", 
-//     localField: '_id',
-//     foreignField: "list"
-// })
+ListSchema.set('toObject', { virtuals: true });
+ListSchema.set('toJSON', { virtuals: true });
 
 
 module.exports = mongoose.model("List", ListSchema)

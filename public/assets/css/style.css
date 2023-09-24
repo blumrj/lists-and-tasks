@@ -9,3 +9,6 @@
 .card-header i:hover{
     color: red;
 }
+.completed-task{
+    text-decoration: line-through;
+}

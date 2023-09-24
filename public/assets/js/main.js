@@ -11,7 +11,8 @@ const showAllLists = async () => {
         if(lists.length){
             var html = ''
             lists.forEach(list => {
-                html += renderList(list._id, list.name)
+                html += renderList(list._id, list.name, list.tasks)
+                // renderTasks(list)
                 renderModal(list._id, list.name)
             });
             listsContainer.innerHTML = html
@@ -22,7 +23,9 @@ const showAllLists = async () => {
 }
 showAllLists()
 
-function renderList(id, name){
+function renderList(id, name, tasks){
+    var ifTasks = tasks.length ? true : false;
+
     var html = `<div class='col'>
     <div class="card h-100">
         <div class="card-header" id="list-${id}">
@@ -39,15 +42,59 @@ function renderList(id, name){
                 <input class="form-control form-control-sm " type="text" value='${name}' onkeydown="enterChanges('${id}', event)" maxlength="20"/>
                 <input type="button" value="Apply" class="btn btn-primary" id="btn-edit-list-${id}">
             </div>
-
         </div>
-        <div class="card-body">
-        <h6 class="card-subtitle">This list is empty</h6>
-        </div>
-    </div>
-</div>`
+        <div class="card-body">`
 
+    if(!ifTasks){
+        html += `<h6 class="card-subtitle">This list is empty</h6>`
+    }
+    else{
+        tasks.forEach(task => {
+            html += renderTasks(task)
+        })
+    }
+
+    html += `</div></div></div>`
+
+        
 return html
+}
+
+
+function renderTasks(task){
+    var isChecked = task.isCompleted
+    var html = `<div class="form-check">`
+
+    if(isChecked){
+        html += `
+            <input class="form-check-input task" type="checkbox" value="${task._id}" id="task-${task._id}" onchange="isCompleted(this)" checked>
+            <label class="form-check-label completed-task" for="task-${task._id}">
+            ${task.title}
+            </label>
+        </div>`
+    }
+    else {
+        html += `
+            <input class="form-check-input task" type="checkbox" value="${task._id}" id="task-${task._id}" onchange="isCompleted(this)">
+            <label class="form-check-label" for="task-${task._id}">
+            ${task.title}
+            </label>
+        </div>`
+    }
+
+
+    return html
+}
+
+function isCompleted(task){
+    console.log("urad");
+    if(task.checked){
+        console.log(task.nextElementSibling);
+        task.nextElementSibling.classList.add("completed-task")
+    }
+    else{
+        task.nextElementSibling.classList.remove("completed-task")
+    }
 }
 
 const createList = async () => {
