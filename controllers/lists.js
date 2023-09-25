@@ -4,7 +4,7 @@ const getAllLists = async (req,res) => {
     try {
         const lists = await List.find({}).populate("tasks").exec()
         if(!lists.length){
-            return res.status(200).json({message: "There are no lists at the moment."})
+            return res.status(200).json({message: "There are no lists at the moment"})
         }
         res.status(200).json({lists})
     } catch (error) {

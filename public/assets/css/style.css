@@ -7,8 +7,16 @@
     transition: ease-in 0.2s;
 }
 .icon:hover{
-    color: red;
+    color: #B9272C;
 }
 .completed-task{
     text-decoration: line-through;
+}
+.btn-primary, .form-check-input:checked{
+    background-color: #B9272C;
+    border-color: #B9272C;
+}
+.btn-primary:hover, .form-check-input:checked{
+    background-color: #972024;
+    border-color: #972024;
 }
