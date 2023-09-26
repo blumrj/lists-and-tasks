@@ -3,32 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lists and Tasks</title>
+    <title>Task Manager</title>
     <!-- bootstrap css -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <!-- bootstrap icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <!-- template css -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.min.css">
 </head>
 <body>
     <div class="bg-dark text-white py-2">
         <div class="container">
             <div class="row justify-content-center align-items-center">
-                <h1 class="col-6 text-center">Task Manager</h1>
+                <h1 class="col-auto text-center">Task Manager</h1>
             </div>
         </div>
     </div>
     <div class="bg-dark-subtle py-4">
         <div class="container">
-            <div class="row justify-content-center align-items-center">
-                <h2 class="col-6">Create a list:</h2>
+            <div class="row justify-content-center align-items-center mb-3">
+                <h2 class="col-auto">Create a new list:</h2>
             </div>
             <div class="row justify-content-center align-items-center">
                 <form class="col-12 col-lg-6">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Type something..." id="tbCreateList">
-                        <input type="button" value="Create a new list" class="btn btn-primary" id="btnCreateList">
+                        <input type="button" value="Create" class="btn btn-primary" id="btnCreateList">
                     </div>
                 </form>
             </div>
@@ -45,6 +45,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script src="assets/js/main.min.js"></script>
 </body>
 </html>

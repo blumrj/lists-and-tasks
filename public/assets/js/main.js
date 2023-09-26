@@ -14,7 +14,7 @@ const showAllLists = async () => {
         else{
             lists.forEach(list => {
                 html += renderList(list._id, list.name, list.tasks)
-                renderModal(list._id, list.name, "deleteList")
+                renderModal(list._id, "list", "deleteList")
             });
         }
 
@@ -42,12 +42,12 @@ function renderList(id, name, tasks){
             </div>
 
             <div id="searchbar-edit-list-${id}" class="input-group input-group-sm d-none">
-                <input type="text" id='tb-edit-list-${id}' class="form-control form-control-sm" value='${name}' onkeydown="enterChanges('${id}', event)" maxlength="20"/>
+                <input type="text" id='tb-edit-list-${id}' class="form-control form-control-sm" value='${name}' maxlength="20"/>
                 <input type="button" id="btn-edit-list-${id}" class="btn btn-primary" value="Apply" for-tb-input="tb-edit-list-${id}" onclick="editList('${id}')">
             </div>
 
             <div id="searchbar-create-task-${id}" class="input-group input-group-sm d-none">
-                <input type="text" id="tb-create-task-${id}" class="form-control form-control-sm" onkeydown="enterChanges('${id}', event)" maxlength="20" placeholder='Add new task...'/>
+                <input type="text" id="tb-create-task-${id}" class="form-control form-control-sm" maxlength="20" placeholder='Add new task...'/>
                 <input type="button" id="btn-create-task-${id}" value="Create" class="btn btn-primary" onclick="createTask('${id}')">
             </div>
         </div>
@@ -71,7 +71,7 @@ return html
 
 function renderTasks(task){
     var isChecked = task.isCompleted
-    var html = `<div class='row justify-content-between mx-0 px-0'>`
+    var html = `<div id="task-header-${task._id}" class='row justify-content-between mx-0 px-0'>`
 
     if(isChecked){
         html += `
@@ -98,12 +98,12 @@ function renderTasks(task){
                 <i class="icon bi bi-trash3 deleteBtn" data-bs-toggle="modal" data-bs-target="#modal-${task._id}"></i>
             </span>
         </div>
-        <div id="searchbar-update-task-${task._id}" class="input-group input-group-sm">
+        <div id="searchbar-update-task-${task._id}" class="input-group input-group-sm d-none">
             <input type="text" id="tb-update-task-${task._id}" class="form-control form-control-sm" value="${task.title}" maxlength="20"/>
             <input type="button" id="btn-update-task-${task._id}" value="Apply" class="btn btn-primary" onclick="editTaskTitle('${task._id}')">
         </div>`
 
-    renderModal(task._id, task.title, "deleteTask")
+    renderModal(task._id, "task", "deleteTask")
 
     return html
 }
@@ -111,12 +111,16 @@ function renderTasks(task){
 function showSearchBar(element) {
 
     var searchbarId = element.dataset.searchbar;
-    var listID = searchbarId.split("-").pop()
-    var searchbarArrayId = ["list-header-" + listID, "searchbar-edit-list-" + listID, "searchbar-create-task-" + listID]
+    var id = searchbarId.split("-").pop()
+    var searchbarArrayId = ["list-header-" + id, "searchbar-edit-list-" + id, "searchbar-create-task-" + id, "task-header-" + id, "searchbar-update-task-" + id]
 
     searchbarArrayId.forEach(id => {
         if(id != searchbarId){
-            document.querySelector(`#${id}`).classList.add("d-none")
+            var el = document.querySelector(`#${id}`)
+            if(el){
+                el.classList.add("d-none")
+
+            }
             return
         }
 
@@ -241,17 +245,15 @@ const editTaskTitle = async (id) => {
         var updatedTaskTitle = editTaskSearchbar.value.trim()
 
         if((originalTaskTitle != updatedTaskTitle) && (updatedTaskTitle != '')){
-            console.log("razlicito");
             var taskID = id;
             var updatedList = {"title": updatedTaskTitle}
             await axios.patch(`/api/v1/tasks/${taskID}`, updatedList)
             showAllLists()
         }
-        // else{
-            console.log("klik");
+        else{
             taskTitle.parentElement.parentElement.classList.remove("d-none")
             editTaskSearchbar.parentElement.classList.add("d-none")
-        // }
+        }
 
     } catch (error) {
         console.log(error);
@@ -262,11 +264,7 @@ btnCreateList.addEventListener("click", () => {
     createList()
 })
 
-function enterChanges(id, event){
-    if (event.key === "Enter") {
-        document.querySelector(`#btn-edit-list-${id}`).click();
-    }
-}
+
 
 function renderModal(id, name, functionName){
     var html = `<div class="modal fade" id="modal-${id}" tabindex="-1" aria-labelledby="modal-${id}-label" aria-hidden="true">
@@ -277,7 +275,7 @@ function renderModal(id, name, functionName){
           <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            Are you sure you want to delete ${name}?
+            Are you sure you want to delete this ${name}?
         </div>
         <div class="modal-footer">
         <button type="button" class="btn btn-primary" onclick="${functionName}('${id}')" data-bs-dismiss="modal">Yes</button>
