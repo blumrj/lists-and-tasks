@@ -3,6 +3,19 @@ var btnCreateList = document.querySelector("#btnCreateList")
 var tbCreateList = document.querySelector("#tbCreateList")
 var modalsDiv = document.querySelector("#modals")
 
+//checking if the main searchbar value is empty on btn click
+document.querySelector("#btnCreateList").addEventListener("click", () => {
+    var listSearchbar = document.querySelector("#tbCreateList")
+    var emptyListErrorSpan = document.querySelector("#list-error")
+    if(listSearchbar.value == "" && emptyListErrorSpan.classList.contains("d-none")){
+        emptyListErrorSpan.classList.remove("d-none")
+    }
+    else{
+        emptyListErrorSpan.classList.add("d-none")
+    }
+
+})
+
 
 const showAllLists = async () => {
     try {
@@ -35,19 +48,19 @@ function renderList(id, name, tasks){
             <div id="list-header-${id}" class="row justify-content-between mx-0 px-0">
                 <p class='col-auto mb-0 px-0' ondblclick="editList('${id}')">${name}</p>
                 <span class='col-auto'>
-                <i class="icon bi bi-plus-circle addBtn" data-searchbar="searchbar-create-task-${id}" onclick="showSearchBar(this)"></i>
-                <i class="icon bi bi-pen editBtn" data-searchbar="searchbar-edit-list-${id}" onclick="showSearchBar(this)"></i>
+                <i class="icon bi bi-plus-circle addBtn" data-searchbar="searchbar-create-task-${id}" onclick="showSearchBar(this, 'list-header-${id}')"></i>
+                <i class="icon bi bi-pen editBtn mx-3 mx-lg-1" data-searchbar="searchbar-edit-list-${id}" onclick="showSearchBar(this, 'list-header-${id}')"></i>
                 <i class="icon bi bi-trash3 deleteBtn" data-bs-toggle="modal" data-bs-target="#modal-${id}"></i>
                 </span>
             </div>
 
             <div id="searchbar-edit-list-${id}" class="input-group input-group-sm d-none">
-                <input type="text" id='tb-edit-list-${id}' class="form-control form-control-sm" value='${name}' maxlength="20"/>
+                <input type="text" id='tb-edit-list-${id}' class="form-control form-control-sm" value='${name}' maxlength="20" onkeyup="isSearchbarEmpty(this, 'Apply')"/>
                 <input type="button" id="btn-edit-list-${id}" class="btn btn-primary" value="Apply" for-tb-input="tb-edit-list-${id}" onclick="editList('${id}')">
             </div>
 
             <div id="searchbar-create-task-${id}" class="input-group input-group-sm d-none">
-                <input type="text" id="tb-create-task-${id}" class="form-control form-control-sm" maxlength="20" placeholder='Add new task...'/>
+                <input type="text" id="tb-create-task-${id}" class="form-control form-control-sm" maxlength="20" placeholder='Add new task...' onkeyup="isSearchbarEmpty(this, 'Create')"/>
                 <input type="button" id="btn-create-task-${id}" value="Create" class="btn btn-primary" onclick="createTask('${id}')">
             </div>
         </div>
@@ -64,7 +77,6 @@ function renderList(id, name, tasks){
 
     html += `</div></div></div>`
     
-
 return html
 }
 
@@ -94,12 +106,12 @@ function renderTasks(task){
 
     html += `
             <span class='col-auto'>
-                <i class="icon bi bi-pen editBtn" data-searchbar="searchbar-update-task-${task._id}" onclick="showSearchBar(this)"></i>
-                <i class="icon bi bi-trash3 deleteBtn" data-bs-toggle="modal" data-bs-target="#modal-${task._id}"></i>
+                <i class="icon bi bi-pen editBtn" data-searchbar="searchbar-update-task-${task._id}" onclick="showSearchBar(this, 'task-header-${task._id}')"></i>
+                <i class="icon bi bi-trash3 deleteBtn ms-3 ms-lg-1" data-bs-toggle="modal" data-bs-target="#modal-${task._id}"></i>
             </span>
         </div>
         <div id="searchbar-update-task-${task._id}" class="input-group input-group-sm d-none">
-            <input type="text" id="tb-update-task-${task._id}" class="form-control form-control-sm" value="${task.title}" maxlength="20"/>
+            <input type="text" id="tb-update-task-${task._id}" class="form-control form-control-sm" value="${task.title}" maxlength="20" onkeyup="isSearchbarEmpty(this, 'Apply')"/>
             <input type="button" id="btn-update-task-${task._id}" value="Apply" class="btn btn-primary" onclick="editTaskTitle('${task._id}')">
         </div>`
 
@@ -108,25 +120,32 @@ function renderTasks(task){
     return html
 }
 
-function showSearchBar(element) {
+function isSearchbarEmpty(searchbar, btnValue){
+    var searchbarBtn = searchbar.nextElementSibling
+    if(searchbar.value != ''){
+        if(searchbarBtn.value != btnValue){
+            searchbar.nextElementSibling.value = btnValue
+        }
+    }
+    else{
+        searchbar.nextElementSibling.value = "Cancel"
+    }
+
+}
+
+function showSearchBar(element, headerId) {
 
     var searchbarId = element.dataset.searchbar;
-    var id = searchbarId.split("-").pop()
-    var searchbarArrayId = ["list-header-" + id, "searchbar-edit-list-" + id, "searchbar-create-task-" + id, "task-header-" + id, "searchbar-update-task-" + id]
+    var activeSearchbar = document.querySelector(`#${searchbarId}`)
+    var header = document.querySelector(`#${headerId}`)
 
-    searchbarArrayId.forEach(id => {
-        if(id != searchbarId){
-            var el = document.querySelector(`#${id}`)
-            if(el){
-                el.classList.add("d-none")
+    activeSearchbar.classList.remove("d-none")
+    if(activeSearchbar.firstElementChild.value == ""){
+        isSearchbarEmpty(activeSearchbar.firstElementChild, "Create")
+    }
+    activeSearchbar.firstElementChild.focus()
 
-            }
-            return
-        }
-
-        document.querySelector(`#${searchbarId}`).classList.remove("d-none")
-    })
-
+    header.classList.add("d-none")
 }
 
 function isCompleted(task){
